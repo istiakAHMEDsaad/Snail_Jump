@@ -42,6 +42,16 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
+
+        # if event.type == pygame.MOUSEMOTION:
+        #     print(event.pos)
+        # if event.type == pygame.MOUSEBUTTONDOWN:
+        #     print("press down")
+        # if event.type == pygame.MOUSEBUTTONUP:
+        #     print("up")
+        # if event.type == pygame.MOUSEMOTION:
+        #     if snail_rectangle.collidepoint(event.pos):
+        #         print('collision')
     # surface position (x, y)
     # ----------> environment <----------
     screen.blit(sky_surface, (0, 0))
@@ -49,6 +59,12 @@ while True:
 
     # ----------> all about snail <----------
     screen.blit(snailStand_surface, snail_rectangle)
+    if snail_rectangle.colliderect(bird_rectangle):
+        print('snail have been eaten by a bird')
+
+    # mouse_position = pygame.mouse.get_pos()
+    # print(snail_rectangle.collidepoint(mouse_position))
+    # print(pygame.mouse.get_pressed())
 
     # ----------> all about bird <----------
     screen.blit(birdOne_surface, bird_rectangle)
