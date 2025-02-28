@@ -11,10 +11,11 @@ pygame.display.set_caption('Jumpy Jumpy')
 # set game frame rate
 clock = pygame.time.Clock()
 
-# surface size (H, W)
-test_surface = pygame.Surface((100, 80))
-# surface color
-test_surface.fill('Red')
+# sky surface
+sky_surface = pygame.image.load('./graphics/environment/sky.png')
+# ground surface
+ground_surface = pygame.image.load('./graphics/environment/ground.png')
+player_surface = pygame.image.load('./graphics/snail/stand.png')
 
 while True:
     for event in pygame.event.get():
@@ -22,6 +23,8 @@ while True:
             pygame.quit()
             exit()
     # surface position (x, y)
-    screen.blit(test_surface,(0,0))
+    screen.blit(sky_surface,(0,0))
+    screen.blit(ground_surface,(0,250))
+    screen.blit(player_surface,(0,200))
     pygame.display.update()
     clock.tick(60)
