@@ -4,7 +4,7 @@ from pygame import K_SPACE
 
 
 def display_score():
-    current_time = pygame.time.get_ticks()//1000 - starting_time
+    current_time = pygame.time.get_ticks() // 1000 - starting_time
     score_surface = text_font.render("Score: " + str(current_time), False, (39, 39, 42))
     score_rectangle = score_surface.get_rect(center=(400, 100))
     screen.blit(score_surface, score_rectangle)
@@ -21,7 +21,7 @@ pygame.display.set_caption('Snail Jump')
 # ----------> set game frame rate <----------
 clock = pygame.time.Clock()
 gravity = 0
-game_active = True
+game_active = False
 starting_time = 0
 
 # ----------> fonts <----------
@@ -35,7 +35,7 @@ sky_surface = pygame.image.load('./graphics/environment/sky.png').convert()
 ground_surface = pygame.image.load('./graphics/environment/ground.png').convert()
 
 # all snail surface
-snailStand_surface = pygame.image.load('./graphics/snail/stand.png').convert_alpha()
+snailStand_surface = pygame.image.load('./graphics/snail/walk1.png').convert_alpha()
 snail_rectangle = snailStand_surface.get_rect(midbottom=(80, 260))
 
 # all bird surface
@@ -43,7 +43,15 @@ birdOne_surface = pygame.image.load('./graphics/bird/bird1.png').convert_alpha()
 bird_rectangle = birdOne_surface.get_rect(midbottom=(700, 252))
 
 # text surface
-text_surface = text_font.render('Snail Jump', False, '#27272A')
+text_surface = text_font.render('Snail Jump', False, (24,24,27))
+menu_text = text_surface.get_rect(center = (400, 110))
+message_text =  text_font.render("PRESS SPACE TO PLAY", False, (66,32,6))
+message_rectangle = message_text.get_rect(center=(400, 350))
+
+# menu
+menu_snail_surface = pygame.image.load('./graphics/snail/stand.png').convert_alpha()
+menu_snail_scaled = pygame.transform.rotozoom(menu_snail_surface, 0, 2)
+menu_snail_rectangle = menu_snail_scaled.get_rect(center=(400, 200))
 
 # ----------> Position <----------
 bird_x_position = 700
@@ -67,7 +75,7 @@ while True:
                 if event.key == pygame.K_SPACE:
                     game_active = True
                     bird_rectangle.left = 800
-                    starting_time = pygame.time.get_ticks()//1000
+                    starting_time = pygame.time.get_ticks() // 1000
 
     if game_active:
         # surface position (x, y)
@@ -97,7 +105,11 @@ while True:
             # exit()
             game_active = False
     else:
-        screen.fill('Green')
+        screen.fill((21,128,61))
+        screen.blit(menu_snail_scaled, menu_snail_rectangle)
+        screen.blit(text_surface, menu_text)
+        screen.blit(message_text, message_rectangle)
+
     pygame.display.update()
     clock.tick(60)
 
