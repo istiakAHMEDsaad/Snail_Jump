@@ -1,7 +1,14 @@
 import pygame
 from sys import exit
-
 from pygame import K_SPACE
+
+
+def display_score():
+    current_time = pygame.time.get_ticks()//1000 - starting_time
+    score_surface = text_font.render("Score: " + str(current_time), False, (39, 39, 42))
+    score_rectangle = score_surface.get_rect(center=(400, 100))
+    screen.blit(score_surface, score_rectangle)
+
 
 pygame.init()
 
@@ -15,6 +22,7 @@ pygame.display.set_caption('Snail Jump')
 clock = pygame.time.Clock()
 gravity = 0
 game_active = True
+starting_time = 0
 
 # ----------> fonts <----------
 text_font = pygame.font.Font('./fonts/Pixeltype.ttf', 50)
@@ -59,6 +67,7 @@ while True:
                 if event.key == pygame.K_SPACE:
                     game_active = True
                     bird_rectangle.left = 800
+                    starting_time = pygame.time.get_ticks()//1000
 
     if game_active:
         # surface position (x, y)
@@ -67,11 +76,11 @@ while True:
         screen.blit(ground_surface, (0, 250))
 
         # ----------> all fonts <----------
-        screen.blit(text_surface, (320, 100))
+        # screen.blit(text_surface, (320, 100))
 
         # ----------> all about snail <----------
         screen.blit(snailStand_surface, snail_rectangle)
-
+        display_score()
         gravity += 1
         snail_rectangle.y += gravity
         if snail_rectangle.bottom >= 260:
@@ -79,7 +88,7 @@ while True:
 
         # ----------> all about bird <----------
         screen.blit(birdOne_surface, bird_rectangle)
-        bird_rectangle.x -= 5
+        bird_rectangle.x -= 6
         if bird_rectangle.right <= 0:
             bird_rectangle.left = 800
 
