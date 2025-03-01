@@ -14,6 +14,7 @@ pygame.display.set_caption('Snail Jump')
 # ----------> set game frame rate <----------
 clock = pygame.time.Clock()
 gravity = 0
+game_active = True
 
 # ----------> fonts <----------
 text_font = pygame.font.Font('./fonts/Pixeltype.ttf', 50)
@@ -46,35 +47,48 @@ while True:
             pygame.quit()
             exit()
 
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE and snail_rectangle.bottom == 260:
-                gravity = -20
+        if game_active:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE and snail_rectangle.bottom == 260:
+                    gravity = -20
 
-        if event.type == pygame.KEYUP:
-            pass
-    # surface position (x, y)
-    # ----------> environment <----------
-    screen.blit(sky_surface, (0, 0))
-    screen.blit(ground_surface, (0, 250))
+            if event.type == pygame.KEYUP:
+                pass
+        else:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    game_active = True
+                    bird_rectangle.left = 800
 
-    # ----------> all about snail <----------
-    screen.blit(snailStand_surface, snail_rectangle)
+    if game_active:
+        # surface position (x, y)
+        # ----------> environment <----------
+        screen.blit(sky_surface, (0, 0))
+        screen.blit(ground_surface, (0, 250))
 
-    gravity += 1
-    snail_rectangle.y += gravity
-    if snail_rectangle.bottom >= 260:
-        snail_rectangle.bottom = 260
-    
+        # ----------> all fonts <----------
+        screen.blit(text_surface, (320, 100))
 
-    # ----------> all about bird <----------
-    screen.blit(birdOne_surface, bird_rectangle)
-    bird_rectangle.x -= 4
-    if bird_rectangle.right <= 0:
-        bird_rectangle.left = 800
+        # ----------> all about snail <----------
+        screen.blit(snailStand_surface, snail_rectangle)
 
-    # ----------> all fonts <----------
-    screen.blit(text_surface, (320, 100))
+        gravity += 1
+        snail_rectangle.y += gravity
+        if snail_rectangle.bottom >= 260:
+            snail_rectangle.bottom = 260
 
+        # ----------> all about bird <----------
+        screen.blit(birdOne_surface, bird_rectangle)
+        bird_rectangle.x -= 5
+        if bird_rectangle.right <= 0:
+            bird_rectangle.left = 800
+
+        if bird_rectangle.colliderect(snail_rectangle):
+            # pygame.quit()
+            # exit()
+            game_active = False
+    else:
+        screen.fill('Green')
     pygame.display.update()
     clock.tick(60)
 
