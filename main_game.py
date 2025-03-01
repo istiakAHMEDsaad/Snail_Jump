@@ -1,6 +1,8 @@
 import pygame
 from sys import exit
 
+from pygame import K_SPACE
+
 pygame.init()
 
 # ----------> initial display size <----------
@@ -11,6 +13,7 @@ pygame.display.set_caption('Snail Jump')
 
 # ----------> set game frame rate <----------
 clock = pygame.time.Clock()
+gravity = 0
 
 # ----------> fonts <----------
 text_font = pygame.font.Font('./fonts/Pixeltype.ttf', 50)
@@ -43,15 +46,12 @@ while True:
             pygame.quit()
             exit()
 
-        # if event.type == pygame.MOUSEMOTION:
-        #     print(event.pos)
-        # if event.type == pygame.MOUSEBUTTONDOWN:
-        #     print("press down")
-        # if event.type == pygame.MOUSEBUTTONUP:
-        #     print("up")
-        # if event.type == pygame.MOUSEMOTION:
-        #     if snail_rectangle.collidepoint(event.pos):
-        #         print('collision')
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE and snail_rectangle.bottom == 260:
+                gravity = -20
+
+        if event.type == pygame.KEYUP:
+            pass
     # surface position (x, y)
     # ----------> environment <----------
     screen.blit(sky_surface, (0, 0))
@@ -59,12 +59,12 @@ while True:
 
     # ----------> all about snail <----------
     screen.blit(snailStand_surface, snail_rectangle)
-    if snail_rectangle.colliderect(bird_rectangle):
-        print('snail have been eaten by a bird')
 
-    # mouse_position = pygame.mouse.get_pos()
-    # print(snail_rectangle.collidepoint(mouse_position))
-    # print(pygame.mouse.get_pressed())
+    gravity += 1
+    snail_rectangle.y += gravity
+    if snail_rectangle.bottom >= 260:
+        snail_rectangle.bottom = 260
+    
 
     # ----------> all about bird <----------
     screen.blit(birdOne_surface, bird_rectangle)
@@ -77,3 +77,25 @@ while True:
 
     pygame.display.update()
     clock.tick(60)
+
+# --------------> Logic <--------------
+# if event.type == pygame.MOUSEMOTION:
+#     print(event.pos)
+# if event.type == pygame.MOUSEBUTTONDOWN:
+#     print("press down")
+# if event.type == pygame.MOUSEBUTTONUP:
+#     print("up")
+# if event.type == pygame.MOUSEMOTION:
+#     if snail_rectangle.collidepoint(event.pos):
+#         print('collision')
+
+# if snail_rectangle.colliderect(bird_rectangle):
+#     print('collision')
+
+# mouse_position = pygame.mouse.get_pos()
+# print(snail_rectangle.collidepoint(mouse_position))
+# print(pygame.mouse.get_pressed())
+
+# keys = pygame.key.get_pressed()
+#     if keys[pygame.K_SPACE]:
+#         print("jump")
