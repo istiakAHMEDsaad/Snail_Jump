@@ -1,7 +1,7 @@
 # ===================================> import
 import pygame
 from sys import exit
-from random import randint
+from pygame import K_SPACE
 
 
 # ===================================> display score
@@ -10,35 +10,6 @@ def display_score():
     score_surface = text_font.render("Score: " + str(current_time), False, (39, 39, 42))
     score_rectangle = score_surface.get_rect(center=(400, 100))
     screen.blit(score_surface, score_rectangle)
-    return current_time
-
-
-# ===================================> movement function
-def obstacle_movement(obstacle_list):
-    if obstacle_list:
-        for obstacle_rectangle in obstacle_list:
-            obstacle_rectangle.x -= 6
-
-            if obstacle_rectangle.bottom == 252:
-                screen.blit(birdOne_surface, obstacle_rectangle)
-
-            else:
-                screen.blit(fly_surface, obstacle_rectangle)
-
-        obstacle_list = [obstacle for obstacle in obstacle_list if obstacle.x > -100]
-        return obstacle_list
-    else:
-        return []
-
-
-# collision function
-def collision(player, obstacle):
-    if obstacle:
-        for obstacle_rectangle in obstacle:
-            if player.colliderect(obstacle_rectangle):
-                return False
-
-    return True
 
 
 pygame.init()
@@ -54,7 +25,6 @@ clock = pygame.time.Clock()
 gravity = 0
 game_active = False
 starting_time = 0
-score = 0
 
 # ===================================> import assets
 text_font = pygame.font.Font('./fonts/Pixeltype.ttf', 50)
@@ -63,10 +33,11 @@ ground_surface = pygame.image.load('./graphics/environment/ground.png').convert(
 snailStand_surface = pygame.image.load('./graphics/snail/walk1.png').convert_alpha()
 birdOne_surface = pygame.image.load('./graphics/bird/bird1.png').convert_alpha()
 menu_snail_surface = pygame.image.load('./graphics/snail/stand.png').convert_alpha()
-fly_surface = pygame.image.load('./graphics/fly/fly1.png').convert_alpha()
 
 # ===================================> rectangle position (bird & snail)
 snail_rectangle = snailStand_surface.get_rect(midbottom=(80, 260))
+bird_rectangle = birdOne_surface.get_rect(midbottom=(700, 252))
+bird_x_position = 700
 
 # ===================================> image transformation
 menu_snail_scaled = pygame.transform.rotozoom(menu_snail_surface, 0, 2)
@@ -79,9 +50,12 @@ message_rectangle = message_text.get_rect(center=(400, 350))
 menu_snail_rectangle = menu_snail_scaled.get_rect(center=(400, 200))
 obstacle_rectangle_list = []
 
+
 # ===================================> user event
 obstacle_timer = pygame.USEREVENT + 1
-pygame.time.set_timer(obstacle_timer, 1500)
+pygame.time.set_timer(obstacle_timer, 900)
+
+
 
 # ===================================> main part
 while True:
@@ -94,20 +68,18 @@ while True:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and snail_rectangle.bottom == 260:
                     gravity = -20
+
             if event.type == pygame.KEYUP:
                 pass
-
         else:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     game_active = True
+                    bird_rectangle.left = 800
                     starting_time = pygame.time.get_ticks() // 1000
 
         if event.type == obstacle_timer and game_active:
-            if randint(0, 2):
-                obstacle_rectangle_list.append(birdOne_surface.get_rect(midbottom=(randint(900, 1400), 252)))
-            else:
-                obstacle_rectangle_list.append(fly_surface.get_rect(midbottom=(randint(900, 1400), 152)))
+            obstacle_rectangle_list.append(birdOne_surface.get_rect(midbottom=(700, 252)))
 
     # ===================================> object blit
     if game_active:
@@ -118,32 +90,48 @@ while True:
 
         # ----------> all about snail <----------
         screen.blit(snailStand_surface, snail_rectangle)
-        score = display_score()
+        display_score()
         gravity += 1
         snail_rectangle.y += gravity
         if snail_rectangle.bottom >= 260:
             snail_rectangle.bottom = 260
 
         # ----------> all about bird <----------
-        obstacle_rectangle_list = obstacle_movement(obstacle_rectangle_list)
-        game_active = collision(snail_rectangle, obstacle_rectangle_list)
+        screen.blit(birdOne_surface, bird_rectangle)
+        # bird_rectangle.x -= 6
+        # if bird_rectangle.right <= 0:
+        #     bird_rectangle.left = 800
+        obstacke_movement(obstacle_rectangle_list)
 
+        if bird_rectangle.colliderect(snail_rectangle):
+            game_active = False
     else:
         screen.fill((21, 128, 61))
         screen.blit(menu_snail_scaled, menu_snail_rectangle)
         screen.blit(text_surface, menu_text)
-
-        score_message_surface = text_font.render(f"Highest Score: {score}", False, (24, 24, 27))
-        score_message_rectangle = score_message_surface.get_rect(center = (400, 350))
-
-        if not score:
-            screen.blit(message_text, message_rectangle)
-        else:
-            screen.blit(score_message_surface, score_message_rectangle)
-
-        obstacle_rectangle_list.clear()
-        snail_rectangle.midbottom = (80, 260)
-        gravity = 0
+        screen.blit(message_text, message_rectangle)
 
     pygame.display.update()
     clock.tick(60)
+
+# --------------> Logic <--------------
+# if event.type == pygame.MOUSEMOTION:
+#     print(event.pos)
+# if event.type == pygame.MOUSEBUTTONDOWN:
+#     print("press down")
+# if event.type == pygame.MOUSEBUTTONUP:
+#     print("up")
+# if event.type == pygame.MOUSEMOTION:
+#     if snail_rectangle.collidepoint(event.pos):
+#         print('collision')
+
+# if snail_rectangle.colliderect(bird_rectangle):
+#     print('collision')
+
+# mouse_position = pygame.mouse.get_pos()
+# print(snail_rectangle.collidepoint(mouse_position))
+# print(pygame.mouse.get_pressed())
+
+# keys = pygame.key.get_pressed()
+#     if keys[pygame.K_SPACE]:
+#         print("jump")
