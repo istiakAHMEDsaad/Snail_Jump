@@ -66,6 +66,11 @@ gravity = 0
 game_active = False
 starting_time = 0
 score = 0
+jump_sound = pygame.mixer.Sound('./audio/jump.mp3')
+jump_sound.set_volume(0.2)
+background_music = pygame.mixer.Sound('./audio/background_music.mp3')
+background_music.set_volume(0.1)
+background_music.play(loops=-1)
 
 # ===================================> import assets
 text_font = pygame.font.Font('./fonts/Pixeltype.ttf', 50)
@@ -133,6 +138,7 @@ while True:
         if game_active:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and player_rectangle.bottom == 260:
+                    jump_sound.play()
                     gravity = -20
             if event.type == pygame.KEYUP:
                 pass
