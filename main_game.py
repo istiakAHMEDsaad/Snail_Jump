@@ -20,7 +20,7 @@ def obstacle_movement(obstacle_list):
             obstacle_rectangle.x -= 6
 
             if obstacle_rectangle.bottom == 252:
-                screen.blit(birdOne_surface, obstacle_rectangle)
+                screen.blit(enemy_surface, obstacle_rectangle)
 
             else:
                 screen.blit(fly_surface, obstacle_rectangle)
@@ -72,6 +72,7 @@ text_font = pygame.font.Font('./fonts/Pixeltype.ttf', 50)
 sky_surface = pygame.image.load('./graphics/environment/sky.png').convert()
 ground_surface = pygame.image.load('./graphics/environment/ground.png').convert()
 
+# import player graphics assets
 player_walk_1 = pygame.image.load('./graphics/snail/walk1.png').convert_alpha()
 player_walk_2 = pygame.image.load('./graphics/snail/stand.png').convert_alpha()
 player_walk_3 = pygame.image.load('./graphics/snail/walk2.png').convert_alpha()
@@ -82,9 +83,21 @@ player_index = 0
 player_surface = player_walk[player_index]
 player_stand_surface = pygame.image.load('./graphics/snail/stand.png').convert_alpha()
 
-birdOne_surface = pygame.image.load('./graphics/bird/bird1.png').convert_alpha()
+# birdOne_surface = pygame.image.load('./graphics/bird/bird1.png').convert_alpha()
+enemy_frame1 = pygame.image.load('./graphics/bird/bird1.png').convert_alpha()
+enemy_frame2 = pygame.image.load('./graphics/bird/bird2.png').convert_alpha()
+enemy_frames = [enemy_frame1, enemy_frame2]
+enemy_index = 0
+enemy_surface = enemy_frames[enemy_index]
+
+# fly_surface = pygame.image.load('./graphics/fly/fly1.png').convert_alpha()
+fly_frame1 = pygame.image.load('./graphics/fly/fly1.png').convert_alpha()
+fly_frame2 = pygame.image.load('./graphics/fly/fly2.png').convert_alpha()
+fly_frames = [fly_frame1, fly_frame2]
+fly_index = 0
+fly_surface = fly_frames[fly_index]
+
 menu_player_surface = pygame.image.load('./graphics/snail/stand.png').convert_alpha()
-fly_surface = pygame.image.load('./graphics/fly/fly1.png').convert_alpha()
 
 # ===================================> rectangle position (enemy & player)
 player_rectangle = player_surface.get_rect(midbottom=(80, 260))
@@ -104,7 +117,13 @@ obstacle_rectangle_list = []
 obstacle_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(obstacle_timer, 1500)
 
-# ===================================> main part
+enemy_animation_timer = pygame.USEREVENT + 2
+pygame.time.set_timer(enemy_animation_timer, 300)
+
+fly_animation_timer = pygame.USEREVENT + 3
+pygame.time.set_timer(fly_animation_timer, 200)
+
+# ===================================> main part event loop
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -124,11 +143,28 @@ while True:
                     game_active = True
                     starting_time = pygame.time.get_ticks() // 1000
 
-        if event.type == obstacle_timer and game_active:
-            if randint(0, 2):
-                obstacle_rectangle_list.append(birdOne_surface.get_rect(midbottom=(randint(900, 1400), 252)))
-            else:
-                obstacle_rectangle_list.append(fly_surface.get_rect(midbottom=(randint(900, 1400), 152)))
+        if game_active:
+            if event.type == obstacle_timer:
+                if randint(0, 2):
+                    obstacle_rectangle_list.append(enemy_surface.get_rect(midbottom=(randint(900, 1400), 252)))
+                else:
+                    obstacle_rectangle_list.append(fly_surface.get_rect(midbottom=(randint(900, 1400), 152)))
+
+            if event.type == enemy_animation_timer:
+                if enemy_index == 0:
+                    enemy_index = 1
+                else:
+                    enemy_index = 0
+
+                enemy_surface = enemy_frames[enemy_index]
+
+            if event.type == fly_animation_timer:
+                if fly_index == 0:
+                    fly_index = 1
+                else:
+                    fly_index = 0
+
+                fly_surface = fly_frames[fly_index]
 
     # ===================================> object blit
     if game_active:
