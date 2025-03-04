@@ -4,6 +4,13 @@ from sys import exit
 from random import randint
 
 
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        super.__init__()
+        self.image = pygame.image.load('./graphics/snail/walk1.png').convert_alpha()
+        self.rect = self.image.get_rect(midbottom = (200, 252))
+
+
 # ===================================> display score
 def display_score():
     current_time = pygame.time.get_ticks() // 1000 - starting_time
@@ -72,6 +79,8 @@ background_music = pygame.mixer.Sound('./audio/background_music.mp3')
 background_music.set_volume(0.1)
 background_music.play(loops=-1)
 
+
+
 # ===================================> import assets
 text_font = pygame.font.Font('./fonts/Pixeltype.ttf', 50)
 sky_surface = pygame.image.load('./graphics/environment/sky.png').convert()
@@ -88,7 +97,7 @@ player_index = 0
 player_surface = player_walk[player_index]
 player_stand_surface = pygame.image.load('./graphics/snail/stand.png').convert_alpha()
 
-# birdOne_surface = pygame.image.load('./graphics/bird/bird1.png').convert_alpha()
+
 enemy_frame1 = pygame.image.load('./graphics/bird/bird1.png').convert_alpha()
 enemy_frame2 = pygame.image.load('./graphics/bird/bird2.png').convert_alpha()
 enemy_frames = [enemy_frame1, enemy_frame2]
